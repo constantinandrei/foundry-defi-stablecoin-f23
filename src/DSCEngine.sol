@@ -152,11 +152,11 @@ contract DSCEngine is ReentrancyGuard {
        for (uint256 i = 0; i < s_collateralTokens.length; i++) {
             address tokenAddress = s_collateralTokens[i];
             uint256 amountCollateral = s_collateralDeposited[user][tokenAddress];
-            totalCollateralValueInEur += getEurValue(tokenAddress, amountCollateral);
+            totalCollateralValueInEur += getUsdValue(tokenAddress, amountCollateral);
         }
     }
 
-    function getEurValue(address token, uint256 amount) public view returns (uint256) {
+    function getUsdValue(address token, uint256 amount) public view returns (uint256) {
         AggregatorV3Interface priceFeed = AggregatorV3Interface(s_priceFeeds[token]);
         (, int256 price, , , ) = priceFeed.latestRoundData();
         return ((uint256(price) * ADDITIONAL_FEE_PRECISION) * amount) / PRECISION;
