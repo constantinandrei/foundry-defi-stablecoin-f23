@@ -7,8 +7,10 @@ import {ERC20Mock} from "@openzeppelin/contracts/mocks/token/ERC20Mock.sol";
 
 contract HelperConfig is Script {
     struct NetworkConfig {
-        address[] collateralTokens;
-        address[] priceFeeds;
+        address wethUsdPriceFeed;
+        address wbtcUsdPriceFeed;
+        address weth;
+        address wbtc;
         uint256 deployerKey;
     }
 
@@ -29,18 +31,16 @@ contract HelperConfig is Script {
 
     function getSepoliaConfig() private view returns (NetworkConfig memory) {
         NetworkConfig memory config;
-        config.collateralTokens = new address[](2);
-        config.collateralTokens[0] = 0xdd13E55209Fd76AfE204dBda4007C227904f0a81;
-        config.collateralTokens[1] = 0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063;
-        config.priceFeeds = new address[](2);
-        config.priceFeeds[0] = 0x694AA1769357215DE4FAC081bf1f309aDC325306;
-        config.priceFeeds[1] = 0x1b44F3514812d835EB1BDB0acB33d3fA3351Ee43;
+        config.weth = 0xdd13E55209Fd76AfE204dBda4007C227904f0a81;
+        config.wbtc = 0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063;
+        config.wethUsdPriceFeed = 0x694AA1769357215DE4FAC081bf1f309aDC325306;
+        config.wbtcUsdPriceFeed = 0x1b44F3514812d835EB1BDB0acB33d3fA3351Ee43;
         config.deployerKey = vm.envUint("PRIVATE_KEY");
         return config;
     }
 
     function getOrCreateAnvilEthConfig() private returns (NetworkConfig memory) {
-        if (activeNetworkConfig.priceFeeds[0] != address(0)) {
+        if (activeNetworkConfig.wethUsdPriceFeed != address(0)) {
             return activeNetworkConfig;
         }
 
@@ -52,12 +52,10 @@ contract HelperConfig is Script {
         vm.stopBroadcast();
 
         NetworkConfig memory config;
-        config.collateralTokens = new address[](2);
-        config.collateralTokens[0] = address(wethMock);
-        config.collateralTokens[1] = address(wbtcMock);
-        config.priceFeeds = new address[](2);
-        config.priceFeeds[0] = address(ethUsdPriceFeed);
-        config.priceFeeds[1] = address(btcUsdPriceFeed);
+        config.weth = address(wethMock);
+        config.wbtc = address(wbtcMock);
+        config.wethUsdPriceFeed = address(ethUsdPriceFeed);
+        config.wbtcUsdPriceFeed = address(btcUsdPriceFeed);
         config.deployerKey = DEFAULT_ANVIL_KEY;
 
         return config;
