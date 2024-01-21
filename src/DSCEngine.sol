@@ -212,15 +212,15 @@ contract DSCEngine is ReentrancyGuard {
     /**
      * @param user the address of the user
      * @return totalDscMinted the total amount of DSC minted by the user
-     * @return collateralValueInEur the total value of the collateral in EUR
+     * @return collateralValueInUsd the total value of the collateral in EUR
      */
     function _getAccountInformation(address user)
         private
         view
-        returns (uint256 totalDscMinted, uint256 collateralValueInEur)
+        returns (uint256 totalDscMinted, uint256 collateralValueInUsd)
     {
         totalDscMinted = s_dscMinted[user];
-        collateralValueInEur = getAccountCollateralValueInEur(user);
+        collateralValueInUsd = getAccountCollateralValueInEur(user);
     }
 
     /**
@@ -259,5 +259,9 @@ contract DSCEngine is ReentrancyGuard {
         AggregatorV3Interface priceFeed = AggregatorV3Interface(s_priceFeeds[token]);
         (, int256 price,,,) = priceFeed.latestRoundData();
         return ((uint256(price) * ADDITIONAL_FEE_PRECISION) * amount) / PRECISION;
+    }
+
+    function getAccountInformation(address user) external view returns (uint256, uint256) {
+        return _getAccountInformation(user);
     }
 }
